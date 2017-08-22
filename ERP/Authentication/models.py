@@ -12,3 +12,7 @@ class User(models.Model):
     email = models.EmailField(verbose_name='email address', max_length=254, unique=True)
     def __str__(self):
         return self.user_name
+
+class Rol(models.Model):
+    rol = models.CharField(max_length=50)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
