@@ -15,3 +15,9 @@ class Store(models.Model):
     address = models.CharField(max_length=100)
     phone = models.IntegerField()
     email = models.EmailField(verbose_name='email address', max_length=254, unique=True)
+
+class Ingredient(models.Model):
+    ingredient_guid = models.CharField(max_length=250, primary_key=True, unique=True)
+    name = models.CharField(max_length=100, unique=True)
+    _type = models.CharField(max_length=100)
+    expiration_date = models.DateField(blank=True, null=True)
