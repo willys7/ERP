@@ -66,6 +66,9 @@ class AuthTokenManager(models.Manager):
         token.last_activation = datetime.datetime.utcnow()
         token.save()
         return token
+    def find_token_by_value(self, token):
+        real_token = self.get(token=token)
+        return real_token
 
 
 class Token(models.Model):

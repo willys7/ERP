@@ -30,7 +30,7 @@ def AddUser(user):
         date = token.last_activation + datetime.timedelta(hours=2)
         return TokenResponseModel(token.token, date, rol.rol)
     else:
-        raise Exception ("Invalid User")
+        raise Exception ("Invalid User Model")
 
 
 def ValidateUserCredentials(user_name, password):

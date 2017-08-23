@@ -17,9 +17,11 @@ from django.conf.urls import url, include
 from rest_framework import routers
 from django.contrib import admin
 from Authentication import views
+from Inventory import views
 
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include('Authentication.urls')),
+    url(r'^', include('Inventory.urls')),
 ]
