@@ -28,6 +28,7 @@ class Ingredient(models.Model):
     ingredient_guid = models.CharField(max_length=250, primary_key=True, unique=True)
     name = models.CharField(max_length=100, unique=True)
     _type = models.CharField(max_length=100)
+    cost = models.FloatField()
     expiration_date = models.DateField(blank=True, null=True)
 
 
@@ -36,5 +37,8 @@ class Inventory(models.Model):
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     quantity = models.IntegerField()
+    cost = models.FloatField()
+    date = models.DateField(auto_now=True)
+
 
     

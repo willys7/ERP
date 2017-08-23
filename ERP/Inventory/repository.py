@@ -9,9 +9,12 @@ def CreateNewStore(store):
     except:
         raise Exception("Invalid store data")
 
-def FindIfExistAuthToken(token):
+def FindIfExistAuthToken(token_value):
     try:
-        token = Token.objects.find_token_by_value(token)
+        print "Repository"
+        print token_value
+        token = Token.objects.find_token_by_value(token_value)
+        print token.last_activation
         return token
     except:
         raise Exception("Invalid store data")
