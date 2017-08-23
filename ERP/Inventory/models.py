@@ -24,13 +24,20 @@ class Store(models.Model):
     objects = StoreManager()
 
 #Ingredient Model
+class IngredientManager(models.Manager):
+    def create_new_user(self, ingredient):
+        ingredient_model = self.create(ingredient_guid=ingredient.ingredient_guid, 
+            name= ingredient.name, _type=ingredient._type, cost=ingredient.cost, 
+            expiration_date=ingredient.expiration_date)
+        return ingredient_model
+
 class Ingredient(models.Model):
     ingredient_guid = models.CharField(max_length=250, primary_key=True, unique=True)
     name = models.CharField(max_length=100, unique=True)
     _type = models.CharField(max_length=100)
     cost = models.FloatField()
     expiration_date = models.DateField(blank=True, null=True)
-
+    objects = IngredientManager()
 
 #Inventory Model
 class Inventory(models.Model):

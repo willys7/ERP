@@ -7,3 +7,9 @@ class StoreSerializer(serializers.Serializer):
     phone = serializers.IntegerField()
     email = serializers.EmailField(max_length=254)
     token = serializers.CharField()
+
+class IngredientSerializer(serializers.Serializer):
+    name = serializers.CharField(max_length=100)
+    _type = serializers.CharField(max_length=100)
+    cost = serializers.FloatField()
+    expiration_date = serializers.DateField(blank=True, null=True)

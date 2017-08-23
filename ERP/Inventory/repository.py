@@ -9,6 +9,13 @@ def CreateNewStore(store):
     except:
         raise Exception("Invalid store data")
 
+def CreateNewIngredient(ingredient):
+    try:
+        ingredient_model = Ingredient.objects.create_new_user(ingredient)
+        return ingredient_model
+    except:
+        raise Exception("Invalid ingredet data")
+
 def FindIfExistAuthToken(token_value):
     try:
         print "Repository"
