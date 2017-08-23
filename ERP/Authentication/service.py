@@ -1,7 +1,8 @@
 from models import User, Rol
 from rest_framework.authtoken.models import Token
 from  UserModel import *
-from repository import AddUserModel
+from repository import AddUserModel, FindUserByUserName, FindAuthTokenByUserId
+
 
 def AddUser(user):
     print(user)
@@ -26,7 +27,18 @@ def AddUser(user):
 
     if(validate):
         print(AddUserModel(userModel))
-    
+
+
+def ValidateUserCredentials(user_name, password):
+    user = FindUserByUserName(user_name)
+    if user == None:
+        raise Exception ("Invalid user name")
+    else:
+        if(user.password == password):
+            token = FindAuthTokenByUserId(user.id)
+            return token
+        else:
+            raise Exception("Invalid password")
 
 def ValidateUser(user):
     
@@ -42,3 +54,16 @@ def ValidateUser(user):
         raise Exception('Rol is invalid')  
     return True
     
+def ExtractCredentialsFromJson(credentials):
+    print 'extract'
+    print credentials
+    user_name = ""
+    password = ""
+    for key, value in credentials.items():
+        if key == "user_name":
+            user_name = value
+        if key == "password":
+            password = value
+
+    print(user_name, password)
+    return user_name, password

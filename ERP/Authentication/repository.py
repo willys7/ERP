@@ -8,3 +8,17 @@ def AddUserModel(user):
         return True
     except:
         raise Exception("Invalid user data, the user name already exist") 
+
+def FindUserByUserName(user_name):
+    try:
+        user = User.objects.find_user_by_user_name(user_name)
+        return user
+    except:
+        raise Exception("Invalid user name")
+
+def FindAuthTokenByUserId(user_id):
+    try:
+        token = Token.objects.find_token_by_user_id(user_id)
+        return token
+    except:
+        raise Exception("Problems with the Token")

@@ -12,7 +12,11 @@ class UserManager(models.Manager):
     def create_user(self, user):
         user_model = self.create(name=user.name, user_name=user.user_name,
         password=user.password, email=user.email)
-        return user_model       
+        return user_model
+
+    def find_user_by_user_name(self, user_name):
+        user = self.get(user_name=user_name)
+        return user
 
 class User(models.Model):
     name = models.CharField(max_length=30)
@@ -39,6 +43,10 @@ class AuthTokenManager(models.Manager):
         last_activation = datetime.datetime.now()
         token_model = self.create(token=token,last_activation=last_activation,
         user=user)
+
+    def find_token_by_user_id(self, user_id):
+        token = self.get(user_id = user_id)
+        return token
 
 class Token(models.Model):
     token = models.CharField(max_length=254, unique=True)

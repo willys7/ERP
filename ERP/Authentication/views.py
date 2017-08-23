@@ -12,7 +12,7 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
-from service import AddUser
+from service import AddUser, ExtractCredentialsFromJson, ValidateUserCredentials
 
 # Create your views here.
 class JSONResponse(HttpResponse):
@@ -35,3 +35,14 @@ def create_user(request):
         AddUser(final_model)
         return HttpResponse(status=204)
 
+@csrf_exempt
+@api_view(['POST'])
+def login(request):
+    if request.method == 'POST':
+        data = JSONRenderer().render(request.data)
+        model_serializer = CredentialsSerializer(data=data)
+        stream = BytesIO(data)
+        credentials = JSONParser().parse(stream)
+        user_name, password = ExtractCredentialsFromJson(credentials)
+        token = ValidateUserCredentials(user_name, password)
+        return HttpResponse(status=200)
