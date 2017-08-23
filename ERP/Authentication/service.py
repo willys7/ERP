@@ -1,12 +1,11 @@
 from models import User, Rol
 from rest_framework.authtoken.models import Token
 from  UserModel import *
-from repository import AddUserModel, FindUserByUserName, FindAuthTokenByUserId, FindRolByUserId
+from repository import AddUserModel, FindUserByUserName, FindAuthTokenByUserId, FindRolByUserId, UpdateLastActivationToken
 from  TokenResponseModel import *
 import datetime
 
 def AddUser(user):
-    print(user)
     if user == {}:
         raise Exception("Invalid User")
     
@@ -26,8 +25,12 @@ def AddUser(user):
     
     validate = ValidateUser(userModel)
 
-    if(validate):
-        print(AddUserModel(userModel))
+    if validate:
+        rol, token = AddUserModel(userModel)
+        date = token.last_activation + datetime.timedelta(hours=2)
+        return TokenResponseModel(token.token, date, rol.rol)
+    else:
+        raise Exception ("Invalid User")
 
 
 def ValidateUserCredentials(user_name, password):
@@ -37,10 +40,10 @@ def ValidateUserCredentials(user_name, password):
     else:
         if(user.password == password):
             token = FindAuthTokenByUserId(user.id)
+            new_token = UpdateLastActivationToken(token.id)
             rol = FindRolByUserId(user.id)
-            date = token.last_activation + datetime.timedelta(hours=3)
-            response_token = TokenResponseModel(token.token, date, rol.rol)
-            print response_token
+            date = new_token.last_activation + datetime.timedelta(hours=2)
+            response_token = TokenResponseModel(new_token.token, date, rol.rol)
             return response_token
         else:
             raise Exception("Invalid password")
@@ -60,8 +63,6 @@ def ValidateUser(user):
     return True
     
 def ExtractCredentialsFromJson(credentials):
-    print 'extract'
-    print credentials
     user_name = ""
     password = ""
     for key, value in credentials.items():
@@ -70,5 +71,4 @@ def ExtractCredentialsFromJson(credentials):
         if key == "password":
             password = value
 
-    print(user_name, password)
     return user_name, password

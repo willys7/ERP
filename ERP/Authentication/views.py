@@ -32,25 +32,29 @@ class JSONResponse(HttpResponse):
 @api_view(['GET', 'POST'])
 def create_user(request):
     if request.method == 'POST':
-        data = JSONRenderer().render(request.data)
-        model_serializer = UserSerializer(data=data)
-        stream = BytesIO(data)
-        final_model = JSONParser().parse(stream)
-        AddUser(final_model)
-        return HttpResponse(status=204)
+        try:
+            data = JSONRenderer().render(request.data)
+            model_serializer = UserSerializer(data=data)
+            stream = BytesIO(data)
+            final_model = JSONParser().parse(stream)
+            token = AddUser(final_model)
+            serialized_token = json.dumps(token, default=lambda o: o.__dict__)
+            return Response(serialized_token, status=status.HTTP_202_ACCEPTED)
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 @csrf_exempt
 @api_view(['POST'])
 def login(request):
     if request.method == 'POST':
-        data = JSONRenderer().render(request.data)
-        model_serializer = CredentialsSerializer(data=data)
-        stream = BytesIO(data)
-        credentials = JSONParser().parse(stream)
-        user_name, password = ExtractCredentialsFromJson(credentials)
-        token = ValidateUserCredentials(user_name, password)
-        print "SIIII"
-        print token.token
-        serialized_token = json.dumps(token, default=lambda o: o.__dict__)
-        print serialized_token
-        return Response(serialized_token, status=status.HTTP_202_ACCEPTED)
+        try:
+            data = JSONRenderer().render(request.data)
+            model_serializer = CredentialsSerializer(data=data)
+            stream = BytesIO(data)
+            credentials = JSONParser().parse(stream)
+            user_name, password = ExtractCredentialsFromJson(credentials)
+            token = ValidateUserCredentials(user_name, password)
+            serialized_token = json.dumps(token, default=lambda o: o.__dict__)
+            return Response(serialized_token, status=status.HTTP_202_ACCEPTED)
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)

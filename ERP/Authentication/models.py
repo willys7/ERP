@@ -18,6 +18,10 @@ class UserManager(models.Manager):
         user = self.get(user_name=user_name)
         return user
 
+    def find_user_by_user_id(self, user_id):
+        user = self.get(id=user_id)
+        return user
+
 class User(models.Model):
     name = models.CharField(max_length=30)
     user_name = models.CharField(max_length=50, unique=True)
@@ -51,10 +55,18 @@ class AuthTokenManager(models.Manager):
         last_activation = datetime.datetime.utcnow()
         token_model = self.create(token=token,last_activation=last_activation,
         user=user)
+        return token_model
 
     def find_token_by_user_id(self, user_id):
         token = self.get(user_id = user_id)
         return token
+    
+    def update_last_activate_token(self, token_id):
+        token = self.get(id=token_id)
+        token.last_activation = datetime.datetime.utcnow()
+        token.save()
+        return token
+
 
 class Token(models.Model):
     token = models.CharField(max_length=254, unique=True)
