@@ -1,8 +1,9 @@
 from models import User, Rol
 from rest_framework.authtoken.models import Token
 from  UserModel import *
-from repository import AddUserModel, FindUserByUserName, FindAuthTokenByUserId
-
+from repository import AddUserModel, FindUserByUserName, FindAuthTokenByUserId, FindRolByUserId
+from  TokenResponseModel import *
+import datetime
 
 def AddUser(user):
     print(user)
@@ -36,7 +37,11 @@ def ValidateUserCredentials(user_name, password):
     else:
         if(user.password == password):
             token = FindAuthTokenByUserId(user.id)
-            return token
+            rol = FindRolByUserId(user.id)
+            date = token.last_activation + datetime.timedelta(hours=3)
+            response_token = TokenResponseModel(token.token, date, rol.rol)
+            print response_token
+            return response_token
         else:
             raise Exception("Invalid password")
 

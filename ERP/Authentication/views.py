@@ -12,7 +12,11 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
+from rest_framework.response import Response
 from service import AddUser, ExtractCredentialsFromJson, ValidateUserCredentials
+from django.core import serializers
+from  TokenResponseModel import *
+import json
 
 # Create your views here.
 class JSONResponse(HttpResponse):
@@ -45,4 +49,8 @@ def login(request):
         credentials = JSONParser().parse(stream)
         user_name, password = ExtractCredentialsFromJson(credentials)
         token = ValidateUserCredentials(user_name, password)
-        return HttpResponse(status=200)
+        print "SIIII"
+        print token.token
+        serialized_token = json.dumps(token, default=lambda o: o.__dict__)
+        print serialized_token
+        return Response(serialized_token, status=status.HTTP_202_ACCEPTED)

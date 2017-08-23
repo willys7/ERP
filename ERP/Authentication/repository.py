@@ -22,3 +22,10 @@ def FindAuthTokenByUserId(user_id):
         return token
     except:
         raise Exception("Problems with the Token")
+
+def FindRolByUserId(user_id):
+    try:
+        rol = Rol.objects.find_rol_by_user_id(user_id)
+        return rol
+    except:
+        raise Exception("User does not have rol")

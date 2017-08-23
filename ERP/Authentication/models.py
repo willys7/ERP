@@ -27,20 +27,28 @@ class User(models.Model):
     def __str__(self):
         return self.user_name
 
+
+#ROL Model
 class RolManager(models.Manager):
     def create_rol_for_user(self, user, rol):
         rol_model = self.create(user=user, rol=rol)
         return rol_model
+    
+    def find_rol_by_user_id(self, user_id):
+        rol = self.get(user_id=user_id)
+        return rol
 
 class Rol(models.Model):
     rol = models.CharField(max_length=50)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     objects = RolManager()
 
+
+#Auth Token Model
 class AuthTokenManager(models.Manager):
     def create_token_for_user(self, user):
         token = uuid.uuid4().hex
-        last_activation = datetime.datetime.now()
+        last_activation = datetime.datetime.utcnow()
         token_model = self.create(token=token,last_activation=last_activation,
         user=user)
 
