@@ -11,9 +11,19 @@ from StoreModel import *
 #Store Model
 class StoreManager(models.Manager):
     def create_new_store(self, store):
-        store_model = self.create(store_guid=store.store_guid, name=store.name,
-            address=store.address, phone=store.phone, email=store.email)
-        return store_model
+        try:
+            store_model = self.create(store_guid=store.store_guid, name=store.name,
+                address=store.address, phone=store.phone, email=store.email)
+            return store_model
+        except Exception, e:
+            raise Exception("Invalid store data: " + str(e))
+
+    def find_store_by_guid(self, guid):
+        try:
+            store_model = self.get(store_guid=guid)
+            return store_model
+        except Exception, e:
+            raise Exception("Not found store by guid: " + str(e))
 
 class Store(models.Model):
     store_guid = models.CharField(max_length=250, primary_key=True, unique=True)
@@ -25,11 +35,25 @@ class Store(models.Model):
 
 #Ingredient Model
 class IngredientManager(models.Manager):
-    def create_new_user(self, ingredient):
-        ingredient_model = self.create(ingredient_guid=ingredient.ingredient_guid, 
-            name= ingredient.name, _type=ingredient._type, cost=ingredient.cost, 
-            expiration_date=ingredient.expiration_date)
-        return ingredient_model
+    def create_new_ingredient(self, ingredient):
+        try:
+            if ingredient.expiration_date != "":
+                ingredient_model = self.create(ingredient_guid=ingredient.ingredient_guid, 
+                    name= ingredient.name, _type=ingredient._type, cost=ingredient.cost, 
+                    expiration_date=ingredient.expiration_date)
+            else:
+                ingredient_model = self.create(ingredient_guid=ingredient.ingredient_guid, 
+                    name= ingredient.name, _type=ingredient._type, cost=ingredient.cost)
+            return ingredient_model
+        except Exception, e:
+            raise Exception("Invalid ingredet data: " + str(e))
+
+    def find_ingredient_by_guid(self, guid):
+        try:
+            ingredient_model = self.get(ingredient_guid=guid)
+            return ingredient_model
+        except Exception, e:
+            raise Exception("Not found ingredient by guid: " + str(e))  
 
 class Ingredient(models.Model):
     ingredient_guid = models.CharField(max_length=250, primary_key=True, unique=True)
@@ -40,12 +64,23 @@ class Ingredient(models.Model):
     objects = IngredientManager()
 
 #Inventory Model
+class InventoryManager(models.Manager):
+    def create_new_transaction(self, transaction, store, ingredient):
+        try:
+            amount = transaction.quantity * ingredient.cost
+            transaction_model = self.create(store=store, ingredient=ingredient,
+                quantity=transaction.quantity, cost=amount)
+            return transaction_model
+        except Exception, e:
+            raise Exception("Invalid transaction data: " + str(e))
+     
 class Inventory(models.Model):
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     quantity = models.IntegerField()
     cost = models.FloatField()
     date = models.DateField(auto_now=True)
+    objects = InventoryManager()
 
 
     

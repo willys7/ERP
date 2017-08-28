@@ -52,14 +52,14 @@ def AddNewIngredient(ingredient):
         if key == 'token':
             token = value 
 
-    if ValidateAuthToken(token):
-        if ValidateIngredient(ingredientModel):
-            ingredient_model = CreateNewIngredient(ingredientModel)
-            return ingredient_model
-        else:
-            raise Exception ("Invalid Ingredient Model")
-    else:
-        raise Exception ("Invalid Token")
+    try:
+        if ValidateAuthToken(token):
+            if ValidateIngredient(ingredientModel):
+                ingredient_model = CreateNewIngredient(ingredientModel)
+                return ingredient_model
+
+    except Exception, e:
+        raise Exception(str(e))
 
 def ValidateAuthToken(token_value): 
     try:
@@ -71,10 +71,10 @@ def ValidateAuthToken(token_value):
         if token_date < now:
             return False
         else:
+            print "TRUE"
             return True
-    except:
-        print "FAil"
-        raise Exception("Invalid Auth Token")
+    except Exception, e:
+        raise Exception(str(e))
 
 def ValidateStore(store):
     if store.name == None or store.name == "":
@@ -92,8 +92,13 @@ def ValidateIngredient(ingredient):
         raise Exception('Name is invalid')
     if ingredient._type == None or ingredient._type == "":
         raise Exception('Type is invalid')
-    if ingredient.cost == None or ingredient.cost == "":
+    if ingredient.cost == None or ingredient.cost == 0:
         raise Exception('Cost is invalid')
-    if ingredient.expiration_date == None or ingredient.expiration_date == "":
-        raise Exception('Expiration Date is invalid')
+    if ingredient.expiration_date != "":
+        if ingredient.expiration_date < datetime.datetime.utcnow():
+            raise Exception('Invalid date please check')
+
     return True
+
+#def HandleInventoryTransaction(transaction):
+    

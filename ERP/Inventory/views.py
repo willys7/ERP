@@ -41,8 +41,8 @@ def create_store(request):
             store = AddNewStore(store_model)
             serialized_obj = serializers.serialize('json', [ store, ])
             return Response(serialized_obj, status=status.HTTP_202_ACCEPTED)
-        except:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        except Exception, e:
+            return Response({"error":str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @csrf_exempt
@@ -51,11 +51,10 @@ def create_ingredient(request):
     if request.method == 'POST':
         try:
             data = JSONRenderer().render(request.data)
-            model_serializer = StoreSerializer(data=data)
             stream = BytesIO(data)
-            store_model = JSONParser().parse(stream)
-            store = AddNewStore(store_model)
-            serialized_obj = serializers.serialize('json', [ store, ])
+            ingredient_model = JSONParser().parse(stream)
+            ingredient = AddNewIngredient(ingredient_model)
+            serialized_obj = serializers.serialize('json', [ ingredient, ])
             return Response(serialized_obj, status=status.HTTP_202_ACCEPTED)
-        except:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        except Exception, e:
+            return Response({"error":str(e)}, status=status.HTTP_400_BAD_REQUEST)
