@@ -11,23 +11,15 @@ import dateutil.parser
 def AddNewStore(store):
     if store == {}:
         raise Exception("Invalid store")
-    storeModel = StoreModel()
+    storeModel = StoreModel(store)
     token = ""
     print store
     for key, value in store.items():
-        if key == 'name':
-            storeModel.name = value
-        if key == 'address':
-            storeModel.address = value
-        if key =='phone':
-            storeModel.phone = value
-        if key == 'email':
-            storeModel.email = value
         if key == 'token':
             token = value
 
     if ValidateAuthToken(token):
-        if ValidateStore(storeModel):
+        if storeModel.ValidateStore(storeModel):
             store_model = CreateNewStore(storeModel)
             return store_model
         else:
@@ -38,23 +30,15 @@ def AddNewStore(store):
 def AddNewIngredient(ingredient):
     if ingredient == {}:
         raise Exception("Invalid store")
-    ingredientModel = IngredientModel()
+    ingredientModel = IngredientModel(ingredient)
     token = ""
     for key, value in ingredient.items():
-        if key == 'name':
-            ingredientModel.name = value
-        if key == '_type':
-            ingredientModel._type = value
-        if key =='cost':
-            ingredientModel.cost = value
-        if key == 'expiration_date':
-            ingredientModel.expiration_date = value
         if key == 'token':
             token = value 
 
     try:
         if ValidateAuthToken(token):
-            if ValidateIngredient(ingredientModel):
+            if ingredientModel.ValidateIngredient(ingredientModel):
                 ingredient_model = CreateNewIngredient(ingredientModel)
                 return ingredient_model
 
