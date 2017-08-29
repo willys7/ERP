@@ -4,6 +4,7 @@ from rest_framework.authtoken.models import Token
 from StoreModel import *
 from IngredientModel import *
 from repository import  *
+from TransactionModel import *
 import datetime
 import dateutil.parser
 
@@ -13,7 +14,6 @@ def AddNewStore(store):
         raise Exception("Invalid store")
     storeModel = StoreModel(store)
     token = ""
-    print store
     for key, value in store.items():
         if key == 'token':
             token = value
@@ -29,7 +29,7 @@ def AddNewStore(store):
 
 def AddNewIngredient(ingredient):
     if ingredient == {}:
-        raise Exception("Invalid store")
+        raise Exception("Invalid ingredient data")
     ingredientModel = IngredientModel(ingredient)
     token = ""
     for key, value in ingredient.items():
@@ -45,17 +45,47 @@ def AddNewIngredient(ingredient):
     except Exception, e:
         raise Exception(str(e))
 
+def HandleInventoryTransaction(transaction):
+    if transaction == {}:
+        raise Exception("Invalid transaction data")
+    transactionModel = TransactionModel(transaction)
+    token = ""
+    store_guid = ""
+    ingredient_guid = ""
+    for key, value in transaction.items():
+        if key == "ingredient_guid":
+            ingredient_guid = value
+        if key == "store_guid":
+            store_guid = value
+        if key == "token":
+            token = value
+    
+    if ValidateAuthToken(token):
+        try:
+            store_model = FindStoreByGuid(store_guid)
+            ingredient_model = FindIngredientByGuid(ingredient_guid)
+            transactionModel.calculate_total_amout_transaction(ingredient_model.cost)
+            if transactionModel.quantity < 0:
+                if ValidateExcistenceByTransaction(transactionModel.quantity, ingredient_guid, store_guid):
+                    transaction_model = CreateNewTransaction(transactionModel, store_model, ingredient_model)
+                    return transaction_model
+                else:
+                    raise Exception("There is not enough stock in inventory")
+                    
+            transaction_model = CreateNewTransaction(transactionModel, store_model, ingredient_model)
+            return transaction_model
+        except Exception, e:
+            raise Exception(str(e))
+
 def ValidateAuthToken(token_value): 
     try:
         token = FindIfExistAuthToken(token_value)
-        print "Service Token"
         date_active = token.last_activation + datetime.timedelta(hours=2)
         token_date = dateutil.parser.parse(str(date_active)).replace(tzinfo=None)
         now = datetime.datetime.utcnow()
         if token_date < now:
             return False
         else:
-            print "TRUE"
             return True
     except Exception, e:
         raise Exception(str(e))
@@ -84,5 +114,26 @@ def ValidateIngredient(ingredient):
 
     return True
 
-#def HandleInventoryTransaction(transaction):
+def ValidateExcistenceByTransaction(quantity, ingredient_guid, store_guid):
+    try:
+        existence_product = ConsolidateInventoryByIngredientInStore(ingredient_guid, store_guid)
+        if existence_product < abs(quantity):
+            return False
+        else:
+            return True
+    except Exception, e:
+        raise Exception(str(e))
+
+def ConsolidateInventoryByProductInStore(ingredient_guid, store_guid):
+    try:
+        existence_product = ConsolidateInventoryByIngredientInStore(ingredient_guid, store_guid)
+        return existence_product
+    except Exception, e:
+        raise Exception(str(e))
+
+    
+
+
+    
+    
     

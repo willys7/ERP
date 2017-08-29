@@ -6,6 +6,7 @@ from django.conf import settings
 import uuid
 import datetime
 from StoreModel import *
+from django.db.models import Sum
 # Create your models here.
 
 #Store Model
@@ -67,10 +68,16 @@ class Ingredient(models.Model):
 class InventoryManager(models.Manager):
     def create_new_transaction(self, transaction, store, ingredient):
         try:
-            amount = transaction.quantity * ingredient.cost
             transaction_model = self.create(store=store, ingredient=ingredient,
-                quantity=transaction.quantity, cost=amount)
+                quantity=transaction.quantity, cost=transaction.amount)
             return transaction_model
+        except Exception, e:
+            raise Exception("Invalid transaction data: " + str(e))
+
+    def consolidate_inventory_by_ingredient_in_store(self, ingredient_guid, store_guid):
+        try:
+            existance = self.filter(store_id=store_guid, ingredient_id=ingredient_guid).aggregate(Sum('quantity'))
+            return existance
         except Exception, e:
             raise Exception("Invalid transaction data: " + str(e))
      
