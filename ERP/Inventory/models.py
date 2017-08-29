@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.conf import settings
+from Purchases.models import Purchase
 import uuid
 import datetime
 from StoreModel import *
@@ -87,7 +88,9 @@ class Inventory(models.Model):
     quantity = models.IntegerField()
     cost = models.FloatField()
     date = models.DateField(auto_now=True)
+    purchase = models.ForeignKey(Purchase, on_delete=models.CASCADE, blank=True, null=True)
     objects = InventoryManager()
+
 
 
     
