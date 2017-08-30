@@ -56,7 +56,7 @@ def FindPurchaseById(id):
         err = e.message.encode('utf-8')
         raise Exception(err)
 
-def CreateNewTransaction(transaction, store, ingredient, purchase):
+def CreateNewPurchaseTransaction(transaction, store, ingredient, purchase):
     try:
         if purchase == "":
             transaction_model = Inventory.objects.create_new_transaction(transaction, store,
@@ -66,6 +66,15 @@ def CreateNewTransaction(transaction, store, ingredient, purchase):
             transaction_model = Inventory.objects.create_new_transaction_with_purchase(transaction, 
             store, ingredient, purchase)
             return transaction_model
+    except IntegrityError as e:
+        err = e.message.encode('utf-8')
+        raise Exception(err)
+
+def CreateNewSaleTransaction(transaction, store, ingredient):
+    try:  
+        transaction_model = Inventory.objects.create_new_transaction(transaction, store,
+        ingredient)
+        return transaction_model   
     except IntegrityError as e:
         err = e.message.encode('utf-8')
         raise Exception(err)

@@ -76,13 +76,13 @@ def HandleInventoryTransaction(transaction):
 
             if transactionModel.quantity < 0:
                 if ValidateExcistenceByTransaction(transactionModel.quantity, ingredient_guid, store_guid):
-                    transaction_model = CreateNewTransaction(transactionModel, store_model,
-                        ingredient_model, purchase_model)
+                    transaction_model = CreateNewSaleTransaction(transactionModel, store_model,
+                        ingredient_model)
                     return transaction_model
                 else:
                     raise Exception("There is not enough stock in inventory")
                     
-            transaction_model = CreateNewTransaction(transactionModel, store_model, ingredient_model, purchase_model)
+            transaction_model = CreateNewPurchaseTransaction(transactionModel, store_model, ingredient_model, purchase_model)
             return transaction_model
         except Exception, e:
             raise Exception(str(e))
