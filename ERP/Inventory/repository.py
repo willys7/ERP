@@ -1,4 +1,5 @@
 from models import Store, Ingredient, Inventory
+from Purchases.models import Purchase
 from Authentication.models import Token
 import datetime
 from django.db import connection
@@ -47,10 +48,24 @@ def FindIngredientByGuid(guid):
         err = e.message.encode('utf-8')
         raise Exception(err)
 
-def CreateNewTransaction(transaction, store, ingredient):
+def FindPurchaseById(id):
     try:
-        transaction_model = Inventory.objects.create_new_transaction(transaction, store, ingredient)
-        return transaction_model
+       purchase_model = Purchase.objects.find_purchase_by_id(id)
+       return purchase_model
+    except IntegrityError as e:
+        err = e.message.encode('utf-8')
+        raise Exception(err)
+
+def CreateNewTransaction(transaction, store, ingredient, purchase):
+    try:
+        if purchase == "":
+            transaction_model = Inventory.objects.create_new_transaction(transaction, store,
+            ingredient)
+            return transaction_model
+        else:
+            transaction_model = Inventory.objects.create_new_transaction_with_purchase(transaction, 
+            store, ingredient, purchase)
+            return transaction_model
     except IntegrityError as e:
         err = e.message.encode('utf-8')
         raise Exception(err)

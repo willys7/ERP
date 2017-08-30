@@ -16,21 +16,21 @@ class ProviderManager(models.Manager):
             address=provider.address, phone=provider.phone, email=provider.email)
             return provider_model
         except Exception, e:
-            raise Exception("Invalid store data: " + str(e))
+            raise Exception("Invalid provider data: " + str(e))
 
     def find_provider_by_nit(self, nit):
         try:
             provider_model = self.get(nit=nit)
             return provider_model
         except Exception, e:
-            raise Exception("Not found store by guid: " + str(e))
+            raise Exception("Not found provider by guid: " + str(e))
     
     def find_provider_by_name(self, name):
         try:
             provider_model = self.get(name=name)
             return provider_model
         except Exception, e:
-            raise Exception("Not found store by guid: " + str(e))
+            raise Exception("Not found provider by guid: " + str(e))
 
 class Provider(models.Model):
     name = models.CharField(max_length=100)
@@ -42,16 +42,23 @@ class Provider(models.Model):
 
 #Purchase Model
 class PurchaseManager(models.Manager):
-    def create_new_provider(self, purchase, provider):
+    def create_new_purchase(self, purchase, provider):
         try:
             purchase_model = self.create(provider=provider, amount=purchase.amount)
             return purchase_model
         except Exception, e:
             raise Exception("Invalid store data: " + str(e))
 
+    def find_purchase_by_id(self, id):
+        try:
+            purchase_model = self.get(id=id)
+            return purchase_model
+        except Exception, e:
+            raise Exception("Not found purchase by guid: " + str(e))
 
 class Purchase(models.Model):
     provider = models.ForeignKey(Provider, on_delete=models.CASCADE)
     amount = models.FloatField()
     date = models.DateField(auto_now=True)
+    objects = PurchaseManager()
 

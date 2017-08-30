@@ -53,6 +53,7 @@ def create_ingredient(request):
             data = JSONRenderer().render(request.data)
             stream = BytesIO(data)
             ingredient_model = JSONParser().parse(stream)
+            print ingredient_model
             ingredient = AddNewIngredient(ingredient_model)
             serialized_obj = serializers.serialize('json', [ ingredient, ])
             return Response(serialized_obj, status=status.HTTP_202_ACCEPTED)

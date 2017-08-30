@@ -1,4 +1,5 @@
 from models import Store, Ingredient, Inventory
+from Purchases.models import Purchase
 from Authentication.models import Token
 from rest_framework.authtoken.models import Token
 from StoreModel import *
@@ -50,6 +51,7 @@ def HandleInventoryTransaction(transaction):
         raise Exception("Invalid transaction data")
     transactionModel = TransactionModel(transaction)
     token = ""
+    purchase = ""
     store_guid = ""
     ingredient_guid = ""
     for key, value in transaction.items():
@@ -59,20 +61,28 @@ def HandleInventoryTransaction(transaction):
             store_guid = value
         if key == "token":
             token = value
+        if key == "purchase":
+            purchase = value
     
     if ValidateAuthToken(token):
         try:
             store_model = FindStoreByGuid(store_guid)
             ingredient_model = FindIngredientByGuid(ingredient_guid)
             transactionModel.calculate_total_amout_transaction(ingredient_model.cost)
+            purchase_model = ""
+            
+            if purchase != "":
+                purchase_model = FindPurchaseById(purchase)
+
             if transactionModel.quantity < 0:
                 if ValidateExcistenceByTransaction(transactionModel.quantity, ingredient_guid, store_guid):
-                    transaction_model = CreateNewTransaction(transactionModel, store_model, ingredient_model)
+                    transaction_model = CreateNewTransaction(transactionModel, store_model,
+                        ingredient_model, purchase_model)
                     return transaction_model
                 else:
                     raise Exception("There is not enough stock in inventory")
                     
-            transaction_model = CreateNewTransaction(transactionModel, store_model, ingredient_model)
+            transaction_model = CreateNewTransaction(transactionModel, store_model, ingredient_model, purchase_model)
             return transaction_model
         except Exception, e:
             raise Exception(str(e))

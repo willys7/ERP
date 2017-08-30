@@ -75,6 +75,14 @@ class InventoryManager(models.Manager):
         except Exception, e:
             raise Exception("Invalid transaction data: " + str(e))
 
+    def create_new_transaction_with_purchase(self, transaction, store, ingredient, purchase):
+        try:
+            transaction_model = self.create(store=store, ingredient=ingredient,
+                quantity=transaction.quantity, cost=transaction.amount, purchase=purchase)
+            return transaction_model
+        except Exception, e:
+            raise Exception("Invalid transaction data: " + str(e))
+    
     def consolidate_inventory_by_ingredient_in_store(self, ingredient_guid, store_guid):
         try:
             existance = self.filter(store_id=store_guid, ingredient_id=ingredient_guid).aggregate(Sum('quantity'))
