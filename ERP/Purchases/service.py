@@ -40,11 +40,13 @@ def HandlePurchase(purchase):
             if key == "nit":
                 provider_nit = value
                 
+        print provider_nit
+        print token
 
         if ValidateAuthToken(token):
             if purchaseModel.Validatepurchase(purchaseModel):
                 provider = FindProviderByNit(provider_nit)
-                purchase = CreatePurchase(purchaseModel, provider_nit)
+                purchase = CreatePurchase(purchaseModel, provider)
                 transactions = HandleTransactionOperations(purchaseModel.purchase_details,
                     purchase)
             if transactions:

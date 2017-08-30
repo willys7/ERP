@@ -12,9 +12,9 @@ class PurchaseModel:
             
     def Validatepurchase(self, purchase):
         if purchase.amount == "" or purchase.amount <= 0:
-            raise Exception ('Name is invalid')
+            raise Exception ('Invalid Amount')
         if purchase.purchase_details == None or len(purchase.purchase_details) <= 0:
-            raise Exception ('Name is invalid')
+            raise Exception ('Invalid purchase details')
         return True
 
     

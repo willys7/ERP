@@ -35,7 +35,9 @@ def FindProviderByNit(nit):
 
 def CreatePurchase(purchase, provider):
     try:
+        print "ADD purchase"
         purchase_model = Purchase.objects.create_new_purchase(purchase, provider)
+        print purchase_model
         return purchase_model
     except IntegrityError as e:
         err = e.message.encode('utf-8')

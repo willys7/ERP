@@ -51,7 +51,9 @@ def process_purchase(request):
             data = JSONRenderer().render(request.data)
             stream = BytesIO(data)
             purchase_model = JSONParser().parse(stream)
+            purchase = HandlePurchase(purchase_model)
+            serialized_obj = serializers.serialize('json', [ purchase, ])
             #serialized_obj = serializers.serialize('json', [ provider_model, ])
-            return Response(purchase_model, status=status.HTTP_202_ACCEPTED)
+            return Response(serialized_obj, status=status.HTTP_202_ACCEPTED)
         except Exception, e:
             return Response({"error":str(e)}, status=status.HTTP_400_BAD_REQUEST)
