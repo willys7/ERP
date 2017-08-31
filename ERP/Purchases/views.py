@@ -47,7 +47,6 @@ def create_provider(request):
 def process_purchase(request):
     if request.method == 'POST':
         try:
-            print ("SIIIIII")
             data = JSONRenderer().render(request.data)
             stream = BytesIO(data)
             purchase_model = JSONParser().parse(stream)
