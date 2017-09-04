@@ -34,3 +34,19 @@ def create_product(request):
             return Response(serialized_obj, status=status.HTTP_202_ACCEPTED)
         except Exception, e:
             return Response({"error":str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@csrf_exempt
+@api_view(['GET', 'POST'])
+def create_buyer(request):
+    if request.method == 'POST':
+        try:
+            data = JSONRenderer().render(request.data)
+            stream = BytesIO(data)
+            buyer_model = JSONParser().parse(stream)
+            print buyer_model
+            buyer = CreateNewBuyer(buyer_model)
+            serialized_obj = serializers.serialize('json', [ buyer, ])
+            return Response(serialized_obj, status=status.HTTP_202_ACCEPTED)
+        except Exception, e:
+            return Response({"error":str(e)}, status=status.HTTP_400_BAD_REQUEST)

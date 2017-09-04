@@ -1,13 +1,13 @@
 import uuid
 import datetime
-class IngredientModel:
+class BuyerModel:
     nit = ""
     name = ""
     address = ""
     phone = ""
 
-    def __init__(self, ingredient):
-        for key, value in ingredient.items():
+    def __init__(self, buyer):
+        for key, value in buyer.items():
             if key == 'name':
                 self.name = value
             if key == 'nit':
@@ -18,15 +18,14 @@ class IngredientModel:
                 self.phone = value
         
 
-    def ValidateIngredient(self, ingredient):
-        if ingredient.name == None or ingredient.name == "":
+    def ValidateBuyer(self, buyer):
+        if buyer.name == None or buyer.name == "":
             raise Exception('Name is invalid')
-        if ingredient._type == None or ingredient._type == "":
-            raise Exception('Type is invalid')
-        if ingredient.cost == None or ingredient.cost == 0:
-            raise Exception('Cost is invalid')
-        if ingredient.expiration_date != "":
-            if ingredient.expiration_date < datetime.datetime.utcnow():
-                raise Exception('Invalid date please check')
+        if buyer.nit == None or buyer.nit == "":
+            raise Exception('nit is invalid')
+        if buyer.address == None or buyer.address == "":
+            raise Exception('address is invalid')
+        if  buyer.phone == None or buyer.phone == "":
+            raise Exception('Invalid Phone')
 
         return True  

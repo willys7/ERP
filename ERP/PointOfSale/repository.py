@@ -18,8 +18,16 @@ def FindIfExistAuthToken(token_value):
 
 def CreateProduct(product):
     try:
-        product = Product.objects.create_new_product(product)
-        return product
+        product_model = Product.objects.create_new_product(product)
+        return product_model
+    except IntegrityError as e:
+        err = e.message.encode('utf-8')
+        raise Exception(err)
+
+def CreateBuyer(buyer):
+    try:
+        buyer_model = Buyer.objects.create_new_buyer(buyer)
+        return buyer_model
     except IntegrityError as e:
         err = e.message.encode('utf-8')
         raise Exception(err)

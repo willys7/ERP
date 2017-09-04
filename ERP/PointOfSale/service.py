@@ -31,6 +31,24 @@ def CreateNewProduct(product):
     except Exception, e:
         raise Exception(str(e))
 
+def CreateNewBuyer(buyer):
+    if buyer == {}:
+        raise Exception("Invalid buyer data")
+    buyerModel = BuyerModel(buyer)
+    token = ""
+    for key, value in buyer.items():
+        if key == 'token':
+            token = value 
+
+    try:
+        if ValidateAuthToken(token):
+            if buyerModel.ValidateBuyer(buyerModel):
+                buyer_model = CreateBuyer(buyerModel)
+                return buyer_model
+
+    except Exception, e:
+        raise Exception(str(e))
+
 
 def ValidateAuthToken(token_value): 
     try:
