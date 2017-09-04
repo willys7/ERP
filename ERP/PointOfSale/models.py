@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from Inventory.models import Ingredient
 from django.db import models
-
+from ProductModel import *
 import uuid
 import datetime
 # Create your models here.
@@ -19,6 +19,13 @@ class BuyerManager(models.Manager):
             buyer_model = self.create(name=buyer.name, nit=buyer.nit, address=buyer.address,
                 phone=buyer.phone)
             return buyer_model
+        except Exception, e:
+            raise Exception("Invalid transaction data: " + str(e))
+
+    def find_buyer_by_nit(self, nit):
+        try:
+            buyer = self.get(nit=nit)
+            return buyer
         except Exception, e:
             raise Exception("Invalid transaction data: " + str(e))
 
@@ -55,6 +62,13 @@ class ProductManager(models.Manager):
         except Exception, e:
             raise Exception("Invalid transaction data: " + str(e))
 
+    def find_product_by_guid(self, guid):
+        try:
+            product = self.get(product_guid=guid)
+            return product
+        except Exception, e:
+            raise Exception("Invalid transaction data: " + str(e))
+
 class Product(models.Model):
     product_guid = models.CharField(max_length=250, primary_key=True, unique=True)
     name = models.CharField(max_length=250, unique= True)
@@ -71,8 +85,17 @@ class RecipeManager(models.Manager):
             return recipe_model
         except Exception, e:
             raise Exception("Invalid transaction data: " + str(e))
+    
+    def find_ingredient_by_product_by_product(self, product):
+        try:
+            ingredient_list = self.all().filter(product=product)
+            return ingredient_list
+        except Exception, e:
+            raise Exception("Invalid transaction data: " + str(e))
+
 
 class Recipe(models.Model):
+    recipe_guid = models.CharField(max_length=250, primary_key=True, unique=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     quantity = models.IntegerField()
