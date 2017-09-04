@@ -78,7 +78,7 @@ class Product(models.Model):
 
 #Recipe Model
 class RecipeManager(models.Manager):
-    def create_new_product(self, recipe, ingredeint, product):
+    def create_new_recipe(self, recipe, ingredeint, product):
         try:
             recipe_model = self.create(product=product, ingredient=ingredeint,
                 quantity=recipe.quantity)

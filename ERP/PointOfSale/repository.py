@@ -31,3 +31,15 @@ def CreateBuyer(buyer):
     except IntegrityError as e:
         err = e.message.encode('utf-8')
         raise Exception(err)
+
+def CreateRecipe(recipe):
+    try:
+        print recipe.product_guid
+        ingredient_model = Ingredient.objects.find_ingredient_by_guid(recipe.ingredient_guid)
+        print ingredient_model
+        product_model = Product.objects.find_product_by_guid(recipe.product_guid)
+        recipe_model = Recipe.objects.create_new_recipe(recipe, ingredient_model, product_model)
+        return recipe_model
+    except IntegrityError as e:
+        err = e.message.encode('utf-8')
+        raise Exception(err)

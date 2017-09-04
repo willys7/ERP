@@ -49,6 +49,24 @@ def CreateNewBuyer(buyer):
     except Exception, e:
         raise Exception(str(e))
 
+def CreateNewRecipe(recipe):
+    if recipe == {}:
+        raise Exception("Invalid recipe data")
+    recipeModel = RecipeModel(recipe)
+    token = ""
+    for key, value in recipe.items():
+        if key == 'token':
+            token = value 
+
+    try:
+        if ValidateAuthToken(token):
+            if recipeModel.ValidateRecipe(recipeModel):
+                recipe_model = CreateRecipe(recipeModel)
+                return recipe_model
+
+    except Exception, e:
+        raise Exception(str(e))
+
 
 def ValidateAuthToken(token_value): 
     try:
