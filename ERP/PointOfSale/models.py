@@ -45,7 +45,7 @@ class Invoice(models.Model):
 
 #Product Model
 class ProductManager(models.Manager):
-    def create_new_invoice(self, product):
+    def create_new_product(self, product):
         try:
             product_model = self.create(product_guid=product.product_guid, name=product.name,
                 price=product.price)
@@ -59,7 +59,19 @@ class Product(models.Model):
     price = models.FloatField()
     objects = ProductManager()
 
+
+#Recipe Model
+class RecipeManager(models.Manager):
+    def create_new_product(self, recipe, ingredeint, product):
+        try:
+            recipe_model = self.create(product=product, ingredient=ingredeint,
+                quantity=recipe.quantity)
+            return recipe_model
+        except Exception, e:
+            raise Exception("Invalid transaction data: " + str(e))
+
 class Recipe(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     quantity = models.IntegerField()
+    objects = RecipeManager()
