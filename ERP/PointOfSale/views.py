@@ -66,3 +66,18 @@ def create_recipe(request):
             return Response(serialized_obj, status=status.HTTP_202_ACCEPTED)
         except Exception, e:
             return Response({"error":str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+@csrf_exempt
+@api_view(['GET', 'POST'])
+def create_invoice(request):
+    if request.method == 'POST':
+        try:
+            data = JSONRenderer().render(request.data)
+            stream = BytesIO(data)
+            invoice_model = JSONParser().parse(stream)
+            print invoice_model
+            invoice = HandleInvoice(invoice_model)
+            serialized_obj = serializers.serialize('json', [ invoice, ])
+            return Response(serialized_obj, status=status.HTTP_202_ACCEPTED)
+        except Exception, e:
+            return Response({"error":str(e)}, status=status.HTTP_400_BAD_REQUEST)

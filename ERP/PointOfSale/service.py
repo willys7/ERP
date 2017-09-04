@@ -67,6 +67,36 @@ def CreateNewRecipe(recipe):
     except Exception, e:
         raise Exception(str(e))
 
+def HandleInvoice(invoice):
+    if invoice == {}:
+        raise Exception("Invalid purchase")
+    try:
+        invoiceModel = InvoiceModel(invoice)
+        token = ""
+        buyer_nit = ""
+        for key, value in invoice.items():
+            if key == "token":
+                token = value
+            if key == "nit":
+                buyer_nit = value
+                
+        print buyer_nit
+        print token
+        
+        if ValidateAuthToken(token):
+            print "SIIII"
+            if invoiceModel.ValidateInvoice(invoiceModel):
+                buyer = FindBuyerByNit(buyer_nit)
+                invoice = CreateInvoice(invoiceModel, buyer)
+                print "SIIII"
+                print "TOKEN"
+                transactions = HandleTransactionOperations(invoice, invoiceModel.products, token)
+            if transactions:
+                return invoice
+            else:
+                return "problem to handle a transaction"
+    except Exception, e:
+        raise Exception (str(e))
 
 def ValidateAuthToken(token_value): 
     try:

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from Inventory.models import Ingredient
+from Inventory.models import Ingredient, Store
 from django.db import models
 from ProductModel import *
 import uuid
@@ -80,7 +80,8 @@ class Product(models.Model):
 class RecipeManager(models.Manager):
     def create_new_recipe(self, recipe, ingredeint, product):
         try:
-            recipe_model = self.create(product=product, ingredient=ingredeint,
+            recipe_model = self.create(recipe_guid=recipe.ingredient_guid, product=product, 
+                ingredient=ingredeint,
                 quantity=recipe.quantity)
             return recipe_model
         except Exception, e:
@@ -100,3 +101,22 @@ class Recipe(models.Model):
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     quantity = models.IntegerField()
     objects = RecipeManager()
+
+
+
+class ProductTransactionManager(models.Manager):
+    def create_product_transaction(self, product, invoice, store, quantity):
+        try:
+            transaction_model = self.create(product=product, invoice=invoice, store=store,
+                quantity=quantity)
+            return transaction_model
+        except Exception, e:
+            raise Exception("Invalid transaction data: " + str(e))
+
+class ProductTransaction(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE)
+    store = models.ForeignKey(Store, on_delete=models.CASCADE)
+    quantity = models.IntegerField()
+    date = models.DateField(auto_now=True)
+    objects = ProductTransactionManager()
