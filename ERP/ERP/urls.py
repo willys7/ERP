@@ -19,11 +19,12 @@ from django.contrib import admin
 from Authentication import views
 from Inventory import views
 from Purchases import views
-
+from PointOfSale import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include('Authentication.urls')),
     url(r'^', include('Inventory.urls')),
     url(r'^', include('Purchases.urls')),
+    url(r'^', include('PointOfSale.urls')),
 ]

@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 from Inventory.models import Ingredient
 from django.db import models
 
+import uuid
+import datetime
 # Create your models here.
 
 #Buyer Model
