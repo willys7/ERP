@@ -81,3 +81,18 @@ def create_invoice(request):
             return Response(serialized_obj, status=status.HTTP_202_ACCEPTED)
         except Exception, e:
             return Response({"error":str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+@csrf_exempt
+@api_view(['GET', 'POST'])
+def find_all_transactions(request):
+    if request.method == 'POST':
+        try:
+            data = JSONRenderer().render(request.data)
+            stream = BytesIO(data)
+            data_model = JSONParser().parse(stream)
+            print data_model
+            invoice = FindAllTransactions(data_model)
+            #serialized_obj = serializers.serialize('json', [ invoice, ])
+            return Response(invoice, status=status.HTTP_202_ACCEPTED)
+        except Exception, e:
+            return Response({"error":str(e)}, status=status.HTTP_400_BAD_REQUEST)

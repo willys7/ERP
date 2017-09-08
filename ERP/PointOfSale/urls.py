@@ -6,4 +6,5 @@ urlpatterns = [
     url(r'^api-pointofsale/buyer/$', views.create_buyer),
     url(r'^api-pointofsale/recipe/$', views.create_recipe),
     url(r'^api-purchases/invoice/$', views.create_invoice),
+    url(r'^api-purchases/transactions/$', views.find_all_transactions),
 ]

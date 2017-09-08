@@ -87,9 +87,9 @@ class RecipeManager(models.Manager):
         except Exception, e:
             raise Exception("Invalid transaction data: " + str(e))
     
-    def find_ingredient_by_product_by_product(self, product):
+    def find_ingredient_by_product_by_product(self, products):
         try:
-            ingredient_list = self.all().filter(product=product)
+            ingredient_list = self.all().filter(product=products)
             return ingredient_list
         except Exception, e:
             raise Exception("Invalid transaction data: " + str(e))
@@ -110,6 +110,22 @@ class ProductTransactionManager(models.Manager):
             transaction_model = self.create(product=product, invoice=invoice, store=store,
                 quantity=quantity)
             return transaction_model
+        except Exception, e:
+            raise Exception("Invalid transaction data: " + str(e))
+
+    def find_all_transactions(self, start_date, end_date):
+        try:
+            transactions = []
+            if start_date != "" and end_date != "":
+                print "SI DATE"
+                print start_date
+                print end_date
+                transactions_query = self.all().filter(date__lte=end_date).filter(date__gte=start_date)
+            else:
+                transactions_query = self.all()
+            for transaction in transactions_query:
+                transactions.append(transaction)
+            return transactions
         except Exception, e:
             raise Exception("Invalid transaction data: " + str(e))
 

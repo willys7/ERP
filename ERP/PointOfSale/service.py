@@ -67,6 +67,25 @@ def CreateNewRecipe(recipe):
     except Exception, e:
         raise Exception(str(e))
 
+def FindAllTransactions(data):
+    try:
+        start_date = ""
+        end_date = ""
+        token = ""
+        for key, value in data.items():
+            if key == "start_date":
+                start_date = dateutil.parser.parse(value)
+            if key == "end_date":
+                end_date = dateutil.parser.parse(value)
+            if key == "token":
+                token = value
+
+        if ValidateAuthToken(token):      
+            transactions = FindTransactions(start_date, end_date)
+        return transactions
+    except Exception, e:
+        raise Exception(str(e))
+
 def HandleInvoice(invoice):
     if invoice == {}:
         raise Exception("Invalid purchase")

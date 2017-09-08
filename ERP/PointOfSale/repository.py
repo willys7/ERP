@@ -62,6 +62,41 @@ def CreateInvoice(invoice, buyer):
         err = e.message.encode('utf-8')
         raise Exception(err)
 
+def FindTransactions(start_date, end_date):
+    try:
+        transactions = {"transactions":[]}
+        transactions_query = ProductTransaction.objects.find_all_transactions(start_date, end_date)
+        print transactions_query
+        for transaction in transactions_query:
+            print transaction
+            transaction_model = {
+                "product":
+                {
+                    "product_name":transaction.product.name,
+                    "product_price":transaction.product.price
+                },
+                "store":
+                {
+                    "store_name":transaction.store.name
+                },
+                "invoice":
+                {
+                    "amount": transaction.invoice.amount,
+                    "invoice_identifier": transaction.invoice.id
+
+                },
+                "quantity": transaction.quantity,
+                "date":transaction.date
+            }
+            print "BEFORE MODEL"
+            print transaction_model
+            transactions["transactions"].append(transaction_model)
+            
+        return transactions
+    except IntegrityError as e:
+        err = e.message.encode('utf-8')
+        raise Exception(err)
+
 def HandleTransactionOperations(invoice, transactions, token):
     try:
         products = []
