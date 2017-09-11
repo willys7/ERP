@@ -80,9 +80,9 @@ def CreateNewSaleTransaction(transaction, store, ingredient):
         raise Exception(err)
 
 
-def ConsolidateInventoryByIngredientInStore(ingredient_guid, store_guid):
+def ConsolidateInventoryByIngredientInStore(ingredient_name, store_guid):
     try:
-        ingredient_existence = Inventory.objects.consolidate_inventory_by_ingredient_in_store(ingredient_guid, store_guid)
+        ingredient_existence = Inventory.objects.consolidate_inventory_by_ingredient_in_store(ingredient_name, store_guid)
         for key, value in ingredient_existence.items():
             return value
     except IntegrityError as e:

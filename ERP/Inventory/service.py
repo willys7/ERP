@@ -134,14 +134,27 @@ def ValidateExcistenceByTransaction(quantity, ingredient_guid, store_guid):
     except Exception, e:
         raise Exception(str(e))
 
-def ConsolidateInventoryByProductInStore(ingredient_guid, store_guid):
+def ConsolidateInventoryByProductInStore(ingredients_model, store_guid):
     try:
-        existence_product = ConsolidateInventoryByIngredientInStore(ingredient_guid, store_guid)
+        print ingredients_model
+        ingredients = []
+        ingredients_json = {}
+        order = ""
+        for key, value in ingredients_model.items():
+            if key == "ingredients":
+                ingredients = value
+            if key == "order":
+                order = value
+        ingredients_json["order"] = order
+        for ingredient_name in ingredients:  
+            existence_product = ConsolidateInventoryByIngredientInStore(ingredient_name, store_guid)
+            existance_ingredient = {
+                "ingredient":ingredient_name,
+                "qty":existence_product
+            }
         return existence_product
     except Exception, e:
         raise Exception(str(e))
-
-    
 
 
     
