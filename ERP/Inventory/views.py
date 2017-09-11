@@ -18,6 +18,7 @@ from rest_framework.response import Response
 from service import *
 from django.core import serializers
 import json
+import pika
 # Create your views here.
 
 class JSONResponse(HttpResponse):
@@ -35,7 +36,6 @@ def create_store(request):
     if request.method == 'POST':
         try:
             data = JSONRenderer().render(request.data)
-            model_serializer = StoreSerializer(data=data)
             stream = BytesIO(data)
             store_model = JSONParser().parse(stream)
             store = AddNewStore(store_model)

@@ -14,6 +14,7 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from service import AddUser, ExtractCredentialsFromJson, ValidateUserCredentials
+from send_queue import *
 from django.core import serializers
 from  TokenResponseModel import *
 import json
@@ -49,12 +50,11 @@ def login(request):
     if request.method == 'POST':
         try:
             data = JSONRenderer().render(request.data)
-            model_serializer = CredentialsSerializer(data=data)
             stream = BytesIO(data)
             credentials = JSONParser().parse(stream)
             user_name, password = ExtractCredentialsFromJson(credentials)
             token = ValidateUserCredentials(user_name, password)
             serialized_token = json.dumps(token, default=lambda o: o.__dict__)
             return Response(serialized_token, status=status.HTTP_202_ACCEPTED)
-        except:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        except Exception, e:
+            return Response({"err":str(e)}, status=status.HTTP_202_ACCEPTED)
