@@ -88,6 +88,7 @@ def find_all_transactions(request):
     if request.method == 'POST':
         try:
             data = JSONRenderer().render(request.data)
+            data = request.data
             stream = BytesIO(data)
             data_model = JSONParser().parse(stream)
             print data_model
@@ -95,4 +96,4 @@ def find_all_transactions(request):
             #serialized_obj = serializers.serialize('json', [ invoice, ])
             return Response(invoice, status=status.HTTP_202_ACCEPTED)
         except Exception, e:
-            return Response({"error":str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error":str(e)}, status=status.HTTP_202_ACCEPTED)

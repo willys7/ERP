@@ -7,18 +7,13 @@ connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost')
 
 channel = connection.channel()
 
-channel.queue_declare(queue='login_queue')
+channel.queue_declare(queue='receive_sales')
 
 def auth_user(data):
-    url = "http://localhost:8000/api-auth/login/"
+    url = "http://localhost:8000/api-purchases/transactions/"
     opener = urllib2.build_opener(urllib2.HTTPHandler)
     print data
-    rea_data = json.loads(data)
-    login = {
-        "user_name": rea_data["user_name"],
-        "password": rea_data["password"]
-    }
-    request = urllib2.Request(url, data=json.dumps(login))
+    request = urllib2.Request(url, data=json.dumps(data))
     request.add_header("Content-Type", "application/json")
     response = opener.open(request)
     return response.read()
@@ -39,6 +34,6 @@ def on_request(ch, method, props, body):
 #Queue Basic implementation
 
 channel.basic_qos(prefetch_count=1)
-channel.basic_consume(on_request, queue='login_queue')
-print(" [x] Awaiting Auth requests")
+channel.basic_consume(on_request, queue='receive_sales')
+print(" [x] Awaiting Sales requests")
 channel.start_consuming()
