@@ -1,6 +1,7 @@
 from models import Store, Ingredient, Inventory
 from Purchases.models import Purchase
 from Authentication.models import Token
+from Inventory.models import Ingredient
 from rest_framework.authtoken.models import Token
 from StoreModel import *
 from IngredientModel import *
@@ -134,25 +135,32 @@ def ValidateExcistenceByTransaction(quantity, ingredient_guid, store_guid):
     except Exception, e:
         raise Exception(str(e))
 
-def ConsolidateInventoryByProductInStore(ingredients_model, store_guid):
+def ConsolidateInventoryByProductInStore(ingredients_model):
     try:
         print ingredients_model
         ingredients = []
-        ingredients_json = {}
+        ingredients_json = {"ingredients":[]}
         order = ""
+        store = ""
         for key, value in ingredients_model.items():
             if key == "ingredients":
                 ingredients = value
             if key == "order":
                 order = value
+            if key == "store":
+                store = value
         ingredients_json["order"] = order
+        print ingredients
         for ingredient_name in ingredients:  
-            existence_product = ConsolidateInventoryByIngredientInStore(ingredient_name, store_guid)
+            ingredient_model = Ingredient.objects.find_ingredient_by_name(ingredient_name)
+            existence_product = ConsolidateInventoryByIngredientInStore(ingredient_model, store)
             existance_ingredient = {
                 "ingredient":ingredient_name,
                 "qty":existence_product
             }
-        return existence_product
+            ingredients_json["ingredients"].append(existance_ingredient)
+        print ingredients_json
+        return ingredients_json
     except Exception, e:
         raise Exception(str(e))
 

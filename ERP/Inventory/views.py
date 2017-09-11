@@ -72,7 +72,7 @@ def create_transaction(request):
             serialized_obj = serializers.serialize('json', [ transaction, ])
             return Response(serialized_obj, status=status.HTTP_202_ACCEPTED)
         except Exception, e:
-            return Response({"error":str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error":str(e)}, status=status.HTTP_202_ACCEPTED)
 
 
 @csrf_exempt
@@ -83,8 +83,8 @@ def validate_ingredient(request):
             data = JSONRenderer().render(request.data)
             stream = BytesIO(data)
             transaction_model = JSONParser().parse(stream)
-            transaction = HandleInventoryTransaction(transaction_model)
-            serialized_obj = serializers.serialize('json', [ transaction, ])
-            return Response(serialized_obj, status=status.HTTP_202_ACCEPTED)
+            transaction = ConsolidateInventoryByProductInStore(transaction_model)
+            
+            return Response(transaction, status=status.HTTP_202_ACCEPTED)
         except Exception, e:
-            return Response({"error":str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error":str(e)}, status=status.HTTP_202_ACCEPTED)

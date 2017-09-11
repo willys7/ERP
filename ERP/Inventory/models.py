@@ -55,7 +55,14 @@ class IngredientManager(models.Manager):
             ingredient_model = self.get(ingredient_guid=guid)
             return ingredient_model
         except Exception, e:
-            raise Exception("Not found ingredient by guid: " + str(e))  
+            raise Exception("Not found ingredient by guid: " + str(e)) 
+
+    def find_ingredient_by_name(self, name):
+        try:
+            ingredient_model = self.get(name=name)
+            return ingredient_model
+        except Exception, e:
+            raise Exception("Not found ingredient by guid: " + str(e)) 
 
 class Ingredient(models.Model):
     ingredient_guid = models.CharField(max_length=250, primary_key=True, unique=True)
@@ -83,9 +90,9 @@ class InventoryManager(models.Manager):
         except Exception, e:
             raise Exception("Invalid transaction data: " + str(e))
     
-    def consolidate_inventory_by_ingredient_in_store(self, ingredient_name, store_guid):
+    def consolidate_inventory_by_ingredient_in_store(self, ingredient, store_guid):
         try:
-            existance = self.filter(store_id=store_guid, ingredient_name=ingredient_name).aggregate(Sum('quantity'))
+            existance = self.filter(store=store_guid, ingredient=ingredient).aggregate(Sum('quantity'))
             return existance
         except Exception, e:
             raise Exception("Invalid transaction data: " + str(e))
