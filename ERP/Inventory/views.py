@@ -42,7 +42,7 @@ def create_store(request):
             serialized_obj = serializers.serialize('json', [ store, ])
             return Response(serialized_obj, status=status.HTTP_202_ACCEPTED)
         except Exception, e:
-            return Response({"error":str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error":str(e)}, status=status.HTTP_202_ACCEPTED)
 
 
 @csrf_exempt
@@ -58,7 +58,7 @@ def create_ingredient(request):
             serialized_obj = serializers.serialize('json', [ ingredient, ])
             return Response(serialized_obj, status=status.HTTP_202_ACCEPTED)
         except Exception, e:
-            return Response({"error":str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error":str(e)}, status=status.HTTP_202_ACCEPTED)
 
 @csrf_exempt
 @api_view(['GET', 'POST'])
@@ -66,6 +66,7 @@ def create_transaction(request):
     if request.method == 'POST':
         try:
             data = JSONRenderer().render(request.data)
+            data = request.data
             stream = BytesIO(data)
             transaction_model = JSONParser().parse(stream)
             transaction = HandleInventoryTransaction(transaction_model)
@@ -81,6 +82,7 @@ def validate_ingredient(request):
     if request.method == 'POST':
         try:
             data = JSONRenderer().render(request.data)
+            data = request.data
             stream = BytesIO(data)
             transaction_model = JSONParser().parse(stream)
             transaction = ConsolidateInventoryByProductInStore(transaction_model)

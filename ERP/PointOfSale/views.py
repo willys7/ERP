@@ -73,6 +73,7 @@ def create_invoice(request):
     if request.method == 'POST':
         try:
             data = JSONRenderer().render(request.data)
+            data = request.data
             stream = BytesIO(data)
             invoice_model = JSONParser().parse(stream)
             print invoice_model

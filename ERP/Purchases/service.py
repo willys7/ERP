@@ -59,7 +59,7 @@ def HandlePurchase(purchase):
 def HandleTransactionOperations(transactions, purchase):
     for value in transactions:
         try:
-            url = "http://localhost:8000/api-inventory/transaction/"
+            url = "http://localhost:8008/api-inventory/transaction/"
             print "Value"
             value["purchase"] = purchase.id
             print value

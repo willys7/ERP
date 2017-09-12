@@ -10,7 +10,7 @@ channel = connection.channel()
 channel.queue_declare(queue='login_queue')
 
 def auth_user(data):
-    url = "http://localhost:8000/api-auth/login/"
+    url = "http://localhost:8008/api-auth/login/"
     opener = urllib2.build_opener(urllib2.HTTPHandler)
     print data
     rea_data = json.loads(data)

@@ -25,7 +25,7 @@ SECRET_KEY = '-1+o!g)2&-m32w-cji*c^$%alv&=%zexre2rrh*tj&q@(!e^$+'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -80,11 +80,11 @@ WSGI_APPLICATION = 'ERP.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'ERP',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
         'USER': 'postgres',
         'PASSWORD': 'root',
-        'HOST': 'localhost',
+        'HOST': 'db',
         'PORT': '5432'
     }
 }

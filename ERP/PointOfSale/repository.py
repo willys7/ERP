@@ -138,7 +138,7 @@ def HandleInventoryTransactions(products, store_guid, token):
                 }
                 print "YES MODEL INGREDIENT"
                 print ingredient_model
-                url = "http://localhost:8000/api-inventory/transaction/"
+                url = "http://localhost:8008/api-inventory/transaction/"
                 opener = urllib2.build_opener(urllib2.HTTPHandler)
                 request = urllib2.Request(url, data=json.dumps(ingredient_model))
                 request.add_header("Content-Type", "application/json")
