@@ -5,7 +5,7 @@ FROM python:2.7
  ADD ERP/requirements.txt /code/
  RUN pip install -r requirements.txt
  ADD . /code/
- 
+ RUN python ERP/Authentication/auth_rcp_service.py
  RUN python ERP/Inventory/validate_queue.py
  RUN python ERP/PointOfSale/recive_sales_queue.py
  RUN python ERP/manage.py migrate
