@@ -3,7 +3,7 @@ import pika
 import urllib2
 import json
 
-connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+connection = pika.BlockingConnection(pika.ConnectionParameters(host='db'))
 
 channel = connection.channel()
 
