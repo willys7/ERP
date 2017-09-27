@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+  web:
+    build: .
+    volumes:
+      - .:/code
+    ports:
+      - "8008:8008"
+    depends_on:
+      - db
+
