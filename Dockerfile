@@ -3,7 +3,7 @@ FROM python:2.7
  RUN mkdir /code
  WORKDIR /code
  ADD ERP/requirements.txt /code/
- RUN pip install -r ERP/requirements.txt
+ RUN pip install -r requirements.txt
  RUN python ERP/Authentication/auth_rcp_service.py
  RUN python ERP/Inventory/validate_queue.py
  RUN python ERP/PointOfSale/recive_sales_queue.py
