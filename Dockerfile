@@ -4,7 +4,8 @@ FROM python:2.7
  WORKDIR /code
  ADD ERP/requirements.txt /code/
  RUN pip install -r requirements.txt
- RUN python Authentication/auth_rcp_service.py
+ ADD ERP/Authentication/auth_rcp_service.py
+ RUN python auth_rcp_service.py
  RUN python ERP/Inventory/validate_queue.py
  RUN python ERP/PointOfSale/recive_sales_queue.py
  RUN python ERP/manage.py migrate
