@@ -9,7 +9,7 @@ channel = connection.channel()
 
 channel.queue_declare(queue='validation_queue')
 
-def auth_user(data):
+def validate_ingredient(data):
     try:
         url = "http://localhost:8008/api-inventory/validateingredient/"
         opener = urllib2.build_opener(urllib2.HTTPHandler)
@@ -24,7 +24,7 @@ def auth_user(data):
 def on_request(ch, method, props, body):
 
     print("request", body)
-    response = auth_user(body)
+    response = validate_ingredient(body)
 
     ch.basic_publish(exchange='',
                      routing_key=props.reply_to,
