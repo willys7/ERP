@@ -24,8 +24,10 @@ class AuthTest(TestCase):
         self.user_model.password = "qwerty123"
 
         self.user = User.objects.create_user(self.user_model)
+        self.user.save()
         self.client = Client()
         self.api_client = APIClient()
+        self.api_client.post('/api-auth/user/', {"name":"alejandro","user_name":"daniel","password":"qwerty123","email":"da@gg.com","rol":"admin"}, format='json')
         self.limitstress = 0.5
 
     #Unit test
@@ -92,3 +94,23 @@ class AuthTest(TestCase):
 
 
     
+    #Stress tests
+    def test_stress_create_user(self):
+        start_time = time()
+        self.api_client.post('/api-auth/user/', {"name":"alejandro","user_name":"daniel","password":"qwerty123","email":"da@gg.com","rol":"admin"}, format='json')
+        elapsed_time = time() - start_time
+        value = False
+        if(self.limitstress > elapsed_time  ):
+            value = True
+
+        self.assertTrue(value)
+
+    def test_stress_get_token(self):
+        start_time = time()
+        response = self.api_client.post('/api-auth/login/', {"user_name":"daniel","password":"qwerty123"}, format='json')
+        elapsed_time = time() - start_time
+        value = False
+        if(self.limitstress > elapsed_time):
+            value = True
+
+        self.assertTrue(value)
