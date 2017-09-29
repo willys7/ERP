@@ -7,7 +7,7 @@ import datetime
 
 def AddUser(user):
     if user == {}:
-        raise Exception("Invalid User")
+        return "Invalid User Model"
     
     userModel = UserModel()
     
@@ -25,18 +25,21 @@ def AddUser(user):
     
     validate = ValidateUser(userModel)
 
-    if validate:
-        rol, token = AddUserModel(userModel)
-        date = token.last_activation + datetime.timedelta(hours=2)
-        return TokenResponseModel(token.token, date, rol.rol)
+    if validate == "true":
+        try:
+            rol, token = AddUserModel(userModel)
+            date = token.last_activation + datetime.timedelta(hours=2)
+            return TokenResponseModel(token.token, date, rol.rol),True
+        except:
+            return "Invalid user name"
     else:
-        raise Exception ("Invalid User Model")
+        return validate
 
 
 def ValidateUserCredentials(user_name, password):
     user = FindUserByUserName(user_name)
     if user == None:
-        raise Exception ("Invalid user name")
+        return ("Invalid user name")
     else:
         if(user.password == password):
             token = FindAuthTokenByUserId(user.id)
@@ -44,23 +47,23 @@ def ValidateUserCredentials(user_name, password):
             rol = FindRolByUserId(user.id)
             date = new_token.last_activation + datetime.timedelta(hours=2)
             response_token = TokenResponseModel(new_token.token, date, rol.rol)
-            return response_token
+            return response_token, True
         else:
-            raise Exception("Invalid password")
+            return ("Invalid user name or password")
 
 def ValidateUser(user):
     
     if user.name == None or user.name == "":
-        raise Exception('Name is invalid')
+        return ('Name is invalid')
     if user.user_name == None or user.user_name == "":
-        raise Exception('User Name is invalid')
+        return ('User Name is invalid')
     if user.email == None or user.email == "":
-        raise Exception('Email is invalid')
+        return ('Email is invalid')
     if user.password == None or user.password == "":
-        raise Exception('Password is invalid')
+        return ('Invalid password')
     if user.rol == None or user.rol == "":
-        raise Exception('Rol is invalid')  
-    return True
+        return ('Rol is invalid')  
+    return "true"
     
 def ExtractCredentialsFromJson(credentials):
     user_name = ""

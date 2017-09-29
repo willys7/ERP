@@ -53,7 +53,7 @@ def login(request):
             stream = BytesIO(data)
             credentials = JSONParser().parse(stream)
             user_name, password = ExtractCredentialsFromJson(credentials)
-            token = ValidateUserCredentials(user_name, password)
+            token,val = ValidateUserCredentials(user_name, password)
             serialized_token = json.dumps(token, default=lambda o: o.__dict__)
             return Response(serialized_token, status=status.HTTP_202_ACCEPTED)
         except Exception, e:
