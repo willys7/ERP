@@ -80,10 +80,9 @@ WSGI_APPLICATION = 'ERP.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.postgresql_sycopg2',
         'NAME': 'postgres',
         'USER': 'postgres',
-        'PASSWORD': 'root',
         'HOST': 'db',
         'PORT': '5432'
     }
