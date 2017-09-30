@@ -8,6 +8,9 @@ class IngredientModel:
     expiration_date = ""
 
     def __init__(self, ingredient):
+        ingredient_guid = str(uuid.uuid4())
+        new_guid = str(uuid.uuid4())
+        ingredient_guid = new_guid
         for key, value in ingredient.items():
             if key == 'name':
                 self.name = value
@@ -17,6 +20,10 @@ class IngredientModel:
                 self.cost = value
             if key == 'expiration_date':
                 self.expiration_date = value
+            if key == 'ingredient_guid':
+                ingredient_guid = value
+                print "NOOOO"
+                print ingredient_guid
         
 
     def ValidateIngredient(self, ingredient):

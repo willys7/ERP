@@ -23,7 +23,7 @@ def AddNewStore(store):
     if ValidateAuthToken(token):
         if storeModel.ValidateStore(storeModel):
             store_model = CreateNewStore(storeModel)
-            return store_model
+            return store_model,True
         else:
             raise Exception ("Invalid Store Model")
     else:
@@ -42,7 +42,7 @@ def AddNewIngredient(ingredient):
         if ValidateAuthToken(token):
             if ingredientModel.ValidateIngredient(ingredientModel):
                 ingredient_model = CreateNewIngredient(ingredientModel)
-                return ingredient_model
+                return ingredient_model, True
 
     except Exception, e:
         raise Exception(str(e))

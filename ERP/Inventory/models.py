@@ -8,6 +8,7 @@ import uuid
 import datetime
 from StoreModel import *
 from django.db.models import Sum
+import uuid
 # Create your models here.
 
 #Store Model
@@ -40,12 +41,14 @@ class IngredientManager(models.Manager):
     def create_new_ingredient(self, ingredient):
         try:
             if ingredient.expiration_date != "":
-                ingredient_model = self.create(ingredient_guid=ingredient.ingredient_guid, 
-                    name= ingredient.name, _type=ingredient._type, cost=ingredient.cost, 
+                ingredient_model = self.create(ingredient_guid=str(uuid.uuid4()), name= ingredient.name,
+                    _type=ingredient._type, cost=ingredient.cost, 
                     expiration_date=ingredient.expiration_date)
+                return ingredient_model
             else:
-                ingredient_model = self.create(ingredient_guid=ingredient.ingredient_guid, 
+                ingredient_model = self.create(ingredient_guid=str(uuid.uuid4()), 
                     name= ingredient.name, _type=ingredient._type, cost=ingredient.cost)
+                return ingredient_model
             return ingredient_model
         except Exception, e:
             raise Exception("Invalid ingredet data: " + str(e))

@@ -10,9 +10,11 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
 from django.utils.six import BytesIO
 import json
+import uuid
 
 from models import *
 from Authentication import models
+from service import *
 # Create your tests here.
 
 class InventoryTest(TestCase):
@@ -35,3 +37,65 @@ class InventoryTest(TestCase):
         #create default ingredient
         self.response_ingredient = self.api_client.post('/api-inventory/ingredient/',{"name":"Zanahoria","_type":"Verdura","cost": 0.42,"token":self.token}, format='json')
 
+
+    #Unit test
+
+    def test_create_store_success(self):
+        new_store = {
+            "name":"Tienda Cayala",
+            "address":"zona 16",
+            "phone": 98989898,
+            "email":"cayala@g.com",
+            "token": self.token
+        }
+        model, value = AddNewStore(new_store)
+        self.assertEquals(model.name, "Tienda Cayala")
+        self.assertTrue(value)
+
+    def test_create_store_fail(self):
+        
+        new_store = {
+            "name":"Tienda Naranjo Mall",
+            "address":"zona 16",
+            "phone": 98989898,
+            "email":"cayala@g.com",
+            "token": self.token
+        }
+        try:
+            value = AddNewStore(new_store)
+            self.assertTrue(False)
+        
+        except Exception, e:
+            self.assertTrue(True)
+
+    def test_create_ingredient_success(self):
+        
+        new_ingredient = {
+            "name":"Tomate",
+            "_type":"Verdura",
+            "cost": 0.42,
+            "token":self.token,
+            "ingredient_guid": str(uuid.uuid4())
+        }
+        model, value = AddNewIngredient(new_ingredient)
+
+        self.assertEquals(model.name,"Tomate")
+        self.assertTrue(True)
+
+    
+    def test_create_ingredient_fail(self):
+        
+        new_ingredient = {
+            "name":"Zanahoria",
+            "_type":"Verdura",
+            "cost": 0.42,
+            "token":self.token,
+            "ingredient_guid": str(uuid.uuid4())
+        }
+        try:
+            model = AddNewIngredient(new_ingredient)
+            self.assertTrue(False)
+        except Exception, e:
+            self.assertTrue(True)
+        
+        

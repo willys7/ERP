@@ -38,7 +38,7 @@ def create_store(request):
             data = JSONRenderer().render(request.data)
             stream = BytesIO(data)
             store_model = JSONParser().parse(stream)
-            store = AddNewStore(store_model)
+            store, value = AddNewStore(store_model)
             serialized_obj = serializers.serialize('json', [ store, ])
             return Response(serialized_obj, status=status.HTTP_202_ACCEPTED)
         except Exception, e:
@@ -54,7 +54,7 @@ def create_ingredient(request):
             stream = BytesIO(data)
             ingredient_model = JSONParser().parse(stream)
             print ingredient_model
-            ingredient = AddNewIngredient(ingredient_model)
+            ingredient, value = AddNewIngredient(ingredient_model)
             serialized_obj = serializers.serialize('json', [ ingredient, ])
             return Response(serialized_obj, status=status.HTTP_202_ACCEPTED)
         except Exception, e:
