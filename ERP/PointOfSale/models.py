@@ -56,7 +56,7 @@ class Invoice(models.Model):
 class ProductManager(models.Manager):
     def create_new_product(self, product):
         try:
-            product_model = self.create(product_guid=product.product_guid, name=product.name,
+            product_model = self.create(product_guid=str(uuid.uuid4()), name=product.name,
                 price=product.price)
             return product_model
         except Exception, e:
@@ -117,9 +117,6 @@ class ProductTransactionManager(models.Manager):
         try:
             transactions = []
             if start_date != "" and end_date != "":
-                print "SI DATE"
-                print start_date
-                print end_date
                 transactions_query = self.all().filter(date__lte=end_date).filter(date__gte=start_date)
             else:
                 transactions_query = self.all()

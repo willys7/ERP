@@ -8,7 +8,7 @@ import uuid
 import datetime
 from StoreModel import *
 from django.db.models import Sum
-import uuid
+
 # Create your models here.
 
 #Store Model

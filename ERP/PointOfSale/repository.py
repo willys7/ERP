@@ -104,7 +104,6 @@ def HandleTransactionOperations(invoice, transactions, token):
             store_guid = ""
             product_model = ""
             quantity = ""
-            print "SIIIIIII"
             for key, value in product.items():
                 if key == "store_guid":
                     store_model = Store.objects.find_store_by_guid(value)
@@ -116,7 +115,7 @@ def HandleTransactionOperations(invoice, transactions, token):
             store_guid = store_model.store_guid
             transaction_model = ProductTransaction.objects.create_product_transaction(product_model,
                 invoice, store_model, quantity)
-        print "SIIIIIII"
+                
         HandleInventoryTransactions(products, store_guid, token)
         return True
     except IntegrityError as e:

@@ -39,6 +39,79 @@ class PointOfSaleTest(TestCase):
         self.response_store = self.api_client.post('/api-inventory/store/',{"name":"Tienda Naranjo Mall","address":"zona 4","phone": 98989898,"email":"wo@g.com","token": self.token}, format='json')
         #create default ingredient
         self.response_ingredient = self.api_client.post('/api-inventory/ingredient/',{"name":"Zanahoria","_type":"Verdura","cost": 0.42,"token":self.token}, format='json')
+        #create new product
+        self.response_product = self.api_client.post('/api-pointofsale/product/',{"name":"IGO Asia","price":15,"token":self.token}, format='json')
 
-    def test_first(self):
-        self.assertTrue(True)
+        #add ingredient to the inventory
+        data_ingredient = dict([(k.encode('ascii','ignore'), v.encode('ascii','ignore')) for k, v in self.response_ingredient.data.items()])
+        data_store = dict([(k.encode('ascii','ignore'), v.encode('ascii','ignore')) for k, v in self.response_store.data.items()])
+        model_trans = {
+            "quantity" : 15,
+	        "store_guid" : data_store["guid"],
+	        "ingredient_guid" : data_ingredient["guid"],
+	        "token" : self.token
+        }
+        response = self.api_client.post('/api-inventory/transaction/', model_trans, format='json')
+
+    #Unit test
+    def test_create_product_success(self):
+        model = {
+            "name":"IGO Buffalo",
+            "price":15,
+            "token": self.token
+        }
+
+        product, value = CreateNewProduct(model)
+        self.assertEquals(product["name"], "IGO Buffalo")
+        self.assertTrue(value)
+
+    def test_create_product_fail(self):
+        model = {
+            "name":"IGO Asia",
+            "price":15,
+            "token": self.token
+        }
+        try:
+            product = CreateNewProduct(model)
+            self.assertTrue(False)
+        except Exception, e:
+            self.assertTrue(True)
+
+    #Integration test
+    def test_create_ricipe_sucess(self):
+        data_ingredient = dict([(k.encode('ascii','ignore'), v.encode('ascii','ignore')) for k, v in self.response_ingredient.data.items()])
+        data_store = dict([(k.encode('ascii','ignore'), v.encode('ascii','ignore')) for k, v in self.response_store.data.items()])
+        data_product = dict([(k.encode('ascii','ignore'), v.encode('ascii','ignore')) for k, v in self.response_product.data.items()]) 
+        
+        model = {
+            "product_guid": data_product["product_guid"],
+            "ingredient_guid": data_ingredient["guid"],
+            "quantity":1,
+            "token": self.token
+        }
+
+        model_recipe, value = CreateNewRecipe(model)
+
+        self.assertEquals("Zanahoria", model_recipe.ingredient.name)
+        self.assertTrue(value)
+
+    def test_create_recipe_fail(self):
+        data_ingredient = dict([(k.encode('ascii','ignore'), v.encode('ascii','ignore')) for k, v in self.response_ingredient.data.items()])
+        data_store = dict([(k.encode('ascii','ignore'), v.encode('ascii','ignore')) for k, v in self.response_store.data.items()])
+        data_product = dict([(k.encode('ascii','ignore'), v.encode('ascii','ignore')) for k, v in self.response_product.data.items()]) 
+        
+        model = {
+            "product_guid": "",
+            "ingredient_guid": data_ingredient["guid"],
+            "quantity":1,
+            "token": self.token
+        }
+
+        try:
+            model_recipe = CreateNewRecipe(model)
+            self.assertTrue(False)
+
+        except Exception, e:
+            self.assertEquals("product_guid is invalid", str(e))
+        
+    

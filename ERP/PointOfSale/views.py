@@ -29,9 +29,9 @@ def create_product(request):
             stream = BytesIO(data)
             product_model = JSONParser().parse(stream)
             print product_model
-            product = CreateNewProduct(product_model)
-            serialized_obj = serializers.serialize('json', [ product, ])
-            return Response(serialized_obj, status=status.HTTP_202_ACCEPTED)
+            product, value = CreateNewProduct(product_model)
+            #serialized_obj = serializers.serialize('json', [ product, ])
+            return Response(product, status=status.HTTP_202_ACCEPTED)
         except Exception, e:
             return Response({"error":str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -61,7 +61,7 @@ def create_recipe(request):
             stream = BytesIO(data)
             recipe_model = JSONParser().parse(stream)
             print recipe_model
-            recipe = CreateNewRecipe(recipe_model)
+            recipe, value = CreateNewRecipe(recipe_model)
             serialized_obj = serializers.serialize('json', [ recipe, ])
             return Response(serialized_obj, status=status.HTTP_202_ACCEPTED)
         except Exception, e:

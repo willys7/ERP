@@ -16,7 +16,6 @@ def CreateNewProduct(product):
     if product == {}:
         raise Exception("Invalid product data")
     productModel = ProductModel(product)
-    print productModel.product_guid
     token = ""
     for key, value in product.items():
         if key == 'token':
@@ -26,7 +25,11 @@ def CreateNewProduct(product):
         if ValidateAuthToken(token):
             if productModel.ValidateProduct(productModel):
                 product_model = CreateProduct(productModel)
-                return product_model
+                model = {
+                    "product_guid":product_model.product_guid,
+                    "name": product_model.name
+                }
+                return model, True
 
     except Exception, e:
         raise Exception(str(e))
@@ -62,7 +65,7 @@ def CreateNewRecipe(recipe):
         if ValidateAuthToken(token):
             if recipeModel.ValidateRecipe(recipeModel):
                 recipe_model = CreateRecipe(recipeModel)
-                return recipe_model
+                return recipe_model, True
 
     except Exception, e:
         raise Exception(str(e))
@@ -103,12 +106,9 @@ def HandleInvoice(invoice):
         print token
         
         if ValidateAuthToken(token):
-            print "SIIII"
             if invoiceModel.ValidateInvoice(invoiceModel):
                 buyer = FindBuyerByNit(buyer_nit)
                 invoice = CreateInvoice(invoiceModel, buyer)
-                print "SIIII"
-                print "TOKEN"
                 transactions = HandleTransactionOperations(invoice, invoiceModel.products, token)
             if transactions:
                 return invoice
