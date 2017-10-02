@@ -1,10 +1,12 @@
-version: '3'
+version: '3.3'
 
 services:
   db:
     image: postgres
+    
   web:
     build: .
+    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8008 && python Authentication/auth_rcp_service.py && python Inventory/validate_queue.py && python PointOfSale/point_of_sale_queue.py && python PointOfSale/receive_sales_queue.py"
     volumes:
       - .:/code
     ports:
