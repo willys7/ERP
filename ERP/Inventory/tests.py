@@ -49,7 +49,7 @@ class InventoryTest(TestCase):
             "token": self.token
         }
         model, value = AddNewStore(new_store)
-        self.assertEquals(model.name, "Tienda Cayala")
+        self.assertEquals(model["name"], "Tienda Cayala")
         self.assertTrue(value)
 
     def test_create_store_fail(self):
@@ -79,7 +79,7 @@ class InventoryTest(TestCase):
         }
         model, value = AddNewIngredient(new_ingredient)
 
-        self.assertEquals(model.name,"Tomate")
+        self.assertEquals(model["name"],"Tomate")
         self.assertTrue(True)
 
     
@@ -98,4 +98,36 @@ class InventoryTest(TestCase):
         except Exception, e:
             self.assertTrue(True)
         
+    #Integration test
+    def test_create_transacction_successful(self):
         
+        data_ingredient = dict([(k.encode('ascii','ignore'), v.encode('ascii','ignore')) for k, v in self.response_ingredient.data.items()])
+        data_store = dict([(k.encode('ascii','ignore'), v.encode('ascii','ignore')) for k, v in self.response_store.data.items()])
+        model_trans = {
+            "quantity" : 5,
+	        "store_guid" : data_store["guid"],
+	        "ingredient_guid" : data_ingredient["guid"],
+	        "token" : self.token
+        }
+
+        model, value = HandleInventoryTransaction(model_trans)
+        self.assertTrue(value)
+
+    def test_create_transacction_fail_is_not_enough_stock_in_inventory(self):
+        data_ingredient = dict([(k.encode('ascii','ignore'), v.encode('ascii','ignore')) for k, v in self.response_ingredient.data.items()])
+        data_store = dict([(k.encode('ascii','ignore'), v.encode('ascii','ignore')) for k, v in self.response_store.data.items()])
+        model_trans = {
+            "quantity" : -5,
+	        "store_guid" : data_store["guid"],
+	        "ingredient_guid" : data_ingredient["guid"],
+	        "token" : self.token
+        }
+        try:
+            model, value = HandleInventoryTransaction(model_trans)
+            self.assertTrue(False)
+        except Exception, e:
+            self.assertEquals("There is not enough stock in inventory", str(e))
+
+    
+    
+

@@ -23,7 +23,12 @@ def AddNewStore(store):
     if ValidateAuthToken(token):
         if storeModel.ValidateStore(storeModel):
             store_model = CreateNewStore(storeModel)
-            return store_model,True
+            model = {
+                "guid": store_model.store_guid,
+                "name": store_model.name,
+                "email": store_model.email
+            }
+            return model,True
         else:
             raise Exception ("Invalid Store Model")
     else:
@@ -42,7 +47,12 @@ def AddNewIngredient(ingredient):
         if ValidateAuthToken(token):
             if ingredientModel.ValidateIngredient(ingredientModel):
                 ingredient_model = CreateNewIngredient(ingredientModel)
-                return ingredient_model, True
+                model = {
+                    "guid" : ingredient_model.ingredient_guid,
+                    "name": ingredient_model.name,
+                    "_type": ingredient_model._type
+                }
+                return model, True
 
     except Exception, e:
         raise Exception(str(e))
@@ -64,7 +74,7 @@ def HandleInventoryTransaction(transaction):
             token = value
         if key == "purchase":
             purchase = value
-    
+
     if ValidateAuthToken(token):
         try:
             store_model = FindStoreByGuid(store_guid)
@@ -79,12 +89,12 @@ def HandleInventoryTransaction(transaction):
                 if ValidateExcistenceByTransaction(transactionModel.quantity, ingredient_guid, store_guid):
                     transaction_model = CreateNewSaleTransaction(transactionModel, store_model,
                         ingredient_model)
-                    return transaction_model
+                    return transaction_model,True
                 else:
                     raise Exception("There is not enough stock in inventory")
                     
             transaction_model = CreateNewPurchaseTransaction(transactionModel, store_model, ingredient_model, purchase_model)
-            return transaction_model
+            return transaction_model, True
         except Exception, e:
             raise Exception(str(e))
 
@@ -137,7 +147,6 @@ def ValidateExcistenceByTransaction(quantity, ingredient_guid, store_guid):
 
 def ConsolidateInventoryByProductInStore(ingredients_model):
     try:
-        print ingredients_model
         ingredients = []
         ingredients_json = {"ingredients":[]}
         order = ""
@@ -150,7 +159,6 @@ def ConsolidateInventoryByProductInStore(ingredients_model):
             if key == "store":
                 store = value
         ingredients_json["order"] = order
-        print ingredients
         for ingredient_name in ingredients:  
             ingredient_model = Ingredient.objects.find_ingredient_by_name(ingredient_name)
             existence_product = ConsolidateInventoryByIngredientInStore(ingredient_model, store)
@@ -159,7 +167,6 @@ def ConsolidateInventoryByProductInStore(ingredients_model):
                 "qty":existence_product
             }
             ingredients_json["ingredients"].append(existance_ingredient)
-        print ingredients_json
         return ingredients_json
     except Exception, e:
         raise Exception(str(e))
