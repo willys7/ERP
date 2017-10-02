@@ -11,6 +11,7 @@ from rest_framework.parsers import JSONParser
 from django.utils.six import BytesIO
 import json
 import uuid
+from time import time
 
 from models import *
 from Authentication import models
@@ -129,5 +130,49 @@ class InventoryTest(TestCase):
             self.assertEquals("There is not enough stock in inventory", str(e))
 
     
-    
+    #Stress Test
+    def test_create_transacction_successful_stress(self):
+        data_ingredient = dict([(k.encode('ascii','ignore'), v.encode('ascii','ignore')) for k, v in self.response_ingredient.data.items()])
+        data_store = dict([(k.encode('ascii','ignore'), v.encode('ascii','ignore')) for k, v in self.response_store.data.items()])
+        model_trans = {
+            "quantity" : 5,
+	        "store_guid" : data_store["guid"],
+	        "ingredient_guid" : data_ingredient["guid"],
+	        "token" : self.token
+        }
+        start_time = time()
+        response = self.api_client.post('/api-inventory/transaction/', model_trans, format='json')
+        elapsed_time = time() - start_time
+        value = False
+        if(self.limitstress > elapsed_time):
+            value = True
 
+        self.assertTrue(value)
+
+    def test__fail_is_not_enough_stock_in_inventory_stress(self):
+        data_ingredient = dict([(k.encode('ascii','ignore'), v.encode('ascii','ignore')) for k, v in self.response_ingredient.data.items()])
+        data_store = dict([(k.encode('ascii','ignore'), v.encode('ascii','ignore')) for k, v in self.response_store.data.items()])
+        model_trans = {
+            "quantity" : -5,
+	        "store_guid" : data_store["guid"],
+	        "ingredient_guid" : data_ingredient["guid"],
+	        "token" : self.token
+        }
+        start_time = time()
+        response = self.api_client.post('/api-inventory/transaction/', model_trans, format='json')
+        elapsed_time = time() - start_time
+        value = False
+        if(self.limitstress > elapsed_time):
+            value = True
+
+        self.assertTrue(value)
+
+    def test_create_store_success_stress(self):
+        start_time = time()
+        self.response_store = self.api_client.post('/api-inventory/store/',{"name":"Tienda Miraflores","address":"zona 4","phone": 989895562,"email":"mira@g.com","token": self.token}, format='json')
+        elapsed_time = time() - start_time
+        value = False
+        if(self.limitstress > elapsed_time):
+            value = True
+
+        self.assertTrue(value)
