@@ -18,6 +18,7 @@ from send_queue import *
 from django.core import serializers
 from  TokenResponseModel import *
 import json
+import graphitesend
 
 # Create your views here.
 class JSONResponse(HttpResponse):
@@ -32,6 +33,7 @@ class JSONResponse(HttpResponse):
 @csrf_exempt
 @api_view(['GET', 'POST'])
 def create_user(request):
+    graphitesend.init(graphite_server='13.59.62.190')
     if request.method == 'POST':
         try:
             data = JSONRenderer().render(request.data)
@@ -40,13 +42,16 @@ def create_user(request):
             final_model = JSONParser().parse(stream)
             token = AddUser(final_model)
             serialized_token = json.dumps(token, default=lambda o: o.__dict__)
+            graphitesend.send('Authentification_API_200',1)
             return Response(serialized_token, status=status.HTTP_202_ACCEPTED)
         except:
+            graphitesend.send('Authentification_API_500',1)
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 @csrf_exempt
 @api_view(['POST'])
 def login(request):
+    graphitesend.init(graphite_server='13.59.62.190')
     if request.method == 'POST':
         try:
             data = JSONRenderer().render(request.data)
@@ -55,6 +60,8 @@ def login(request):
             user_name, password = ExtractCredentialsFromJson(credentials)
             token,val = ValidateUserCredentials(user_name, password)
             serialized_token = json.dumps(token, default=lambda o: o.__dict__)
+            graphitesend.send('Authentification_API_200',1)
             return Response(serialized_token, status=status.HTTP_202_ACCEPTED)
         except Exception, e:
+            graphitesend.send('Authentification_API_500',1)
             return Response({"err":str(e)}, status=status.HTTP_202_ACCEPTED)
