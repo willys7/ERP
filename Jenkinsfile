@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo 'Building..'
+                echo 'Building and testing..'
                 sh '''
                     ExampleENV="${WORKSPACE}"/.ExampleENV
                     if [ -d "$ExampleENV" ]; then
@@ -29,6 +29,8 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo 'Deploying....'
+                echo 'dummy change'
+                sh 'docker-compose up'
             }
         }
     }
