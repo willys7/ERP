@@ -12,6 +12,7 @@ from models import User, Token, Rol
 from time import time
 from  UserModel import *
 from service import *
+import statsd
 
 class AuthTest(TestCase):
 
@@ -29,6 +30,7 @@ class AuthTest(TestCase):
         self.api_client = APIClient()
         self.api_client.post('/api-auth/user/', {"name":"alejandro","user_name":"daniel","password":"qwerty123","email":"da@gg.com","rol":"admin"}, format='json')
         self.limitstress = 0.5
+        self.statsd_connection = statsd.Connection.set_defaults(host="13.59.62.190", port=8125, sample_rate=1, disabled=False)
 
     #Unit test
     def test_create_user_success(self):
@@ -41,6 +43,7 @@ class AuthTest(TestCase):
         }
 
         token, value = AddUser(new_user)
+        
         self.assertTrue(value)
 
     def test_create_user_with_same_username_faild(self):
@@ -52,6 +55,8 @@ class AuthTest(TestCase):
             "rol":"admin"
         }
         var = AddUser(new_user)
+        gauge = statsd.Gauge('Python_metric', self.statsd_connection)
+        gauge.send('Test_success', 1)
         self.assertEqual("Invalid user name", var)
 
     def test_create_user_without_password_faild(self):
@@ -102,7 +107,7 @@ class AuthTest(TestCase):
         value = False
         if(self.limitstress > elapsed_time  ):
             value = True
-
+        
         self.assertTrue(value)
 
     def test_stress_get_token(self):
@@ -112,5 +117,7 @@ class AuthTest(TestCase):
         value = False
         if(self.limitstress > elapsed_time):
             value = True
-
+        else:
+            value = False
+        
         self.assertTrue(value)
