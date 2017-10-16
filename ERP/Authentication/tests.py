@@ -12,7 +12,6 @@ from models import User, Token, Rol
 from time import time
 from  UserModel import *
 from service import *
-import statsd
 import graphitesend
 
 class AuthTest(TestCase):
@@ -32,7 +31,6 @@ class AuthTest(TestCase):
         self.api_client = APIClient()
         self.api_client.post('/api-auth/user/', {"name":"alejandro","user_name":"daniel","password":"qwerty123","email":"da@gg.com","rol":"admin"}, format='json')
         self.limitstress = 0.5
-        self.statsd_connection = statsd.Connection.set_defaults(host="13.59.62.190", port=8125, sample_rate=1, disabled=False)
         graphitesend.init(graphite_server='13.59.62.190')
     #Unit test
     def test_create_user_success(self):
