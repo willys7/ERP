@@ -1,10 +1,7 @@
 Django==1.11.4
-django-statsd-mozilla==0.4.0
 djangorestframework==3.6.3
-graphitesend==0.10.0
 pika==0.11.0
 psycopg2==2.7.3
 python-dateutil==2.6.1
-python-statsd==2.1.0
 pytz==2017.2
 six==1.10.0
